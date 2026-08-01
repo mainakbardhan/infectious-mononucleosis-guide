@@ -1,100 +1,64 @@
-# vinext-starter
+# Infectious Mononucleosis — Interactive Clinical Guide
 
-A clean full-stack starter running on
-[vinext](https://github.com/cloudflare/vinext), with optional Cloudflare D1 and
-Drizzle support.
+![Infectious Mononucleosis — A Visual Clinical Guide](public/og.png)
 
-## Prerequisites
+An interactive, presentation-style introduction to infectious mononucleosis and Epstein–Barr virus (EBV). The deck is designed for students, educators, and anyone looking for a concise visual overview of the clinical presentation, diagnosis, management, complications, and recovery process.
 
-- Node.js `>=22.13.0`
+## View the presentation
 
-## Quick Start
+- **[Open on GitHub Pages](https://mainakbardhan.github.io/infectious-mononucleosis-guide/)**
+- **[Open on Cloudflare Pages](https://infectious-mononucleosis-guide.pages.dev/)**
+
+Both links display the same presentation. No account, installation, or purchased domain is required.
+
+## What is included
+
+- Ten responsive presentation slides
+- An overview of EBV pathogenesis and transmission
+- The classic symptom triad and important examination findings
+- A practical diagnostic pathway, including serology interpretation
+- Supportive management and return-to-activity guidance
+- Red-flag complications such as splenic rupture and airway obstruction
+- A three-question interactive knowledge check with explanations
+
+## How to navigate
+
+- Use the **left and right arrow keys** to move between slides.
+- Use the **on-screen arrow buttons** on desktop or mobile.
+- Open the **menu in the upper-right corner** to jump to any topic.
+- Select an answer on the final slide to complete the knowledge check.
+
+## Run it locally
+
+Prerequisite: Node.js 22 or later.
 
 ```bash
 npm install
 npm run dev
-npm run build
 ```
 
-This starter does not use `wrangler.jsonc`.
+Open the local address shown in the terminal.
 
-## Included Shape
+To build the portable static version used by GitHub Pages and Cloudflare Pages:
 
-- edit site code under `app/`
-- `.openai/hosting.json` declares optional Sites D1 and R2 bindings
-- `vite.config.ts` simulates declared bindings for local development
-- `db/schema.ts` starts intentionally empty
-- `examples/d1/` contains an optional D1 example surface
-- `drizzle.config.ts` supports local migration generation when needed
-
-## Workspace Auth Headers
-
-Signed-in visitors receive both `oai-authenticated-user-id` and `oai-authenticated-user-email`. Private Sites require every visitor to sign in; public Sites may also have anonymous visitors, for whom neither header is present.
-
-The user ID is stable for the same user on the same Site and different across Sites. Email and name are intended for display or contact purposes.
-
-SIWC-authenticated workspace sites may also receive
-`oai-authenticated-user-full-name` when the user's SIWC profile has a non-empty
-`name` claim. The full-name value is percent-encoded UTF-8 and is accompanied by
-`oai-authenticated-user-full-name-encoding: percent-encoded-utf-8`.
-
-Treat the full name as optional and fall back to email when it is absent:
-
-```tsx
-import { headers } from "next/headers";
-
-export default async function Home() {
-  const requestHeaders = await headers();
-  const userId = requestHeaders.get("oai-authenticated-user-id");
-  const email = requestHeaders.get("oai-authenticated-user-email");
-  const encodedFullName = requestHeaders.get("oai-authenticated-user-full-name");
-  const fullName =
-    encodedFullName &&
-    requestHeaders.get("oai-authenticated-user-full-name-encoding") ===
-      "percent-encoded-utf-8"
-      ? decodeURIComponent(encodedFullName)
-      : null;
-
-  const displayName = fullName ?? email;
-  // ...
-}
+```bash
+npm run build:static
 ```
 
-## Optional Dispatch-Owned ChatGPT Sign-In
+## Publishing
 
-Import the ready-to-use helpers from `app/chatgpt-auth.ts` when the site needs
-optional or required ChatGPT sign-in:
+Every push to the `main` branch automatically updates the GitHub Pages version through GitHub Actions.
 
-- Use `getChatGPTUser()` for optional signed-in UI.
-- Use `requireChatGPTUser(returnTo)` for server-rendered pages that should send
-  anonymous visitors through Sign in with ChatGPT.
-- Use `chatGPTSignInPath(returnTo)` and `chatGPTSignOutPath(returnTo)` for
-  browser links or actions.
-- Pass a same-origin relative `returnTo` path for the destination after sign-in
-  or sign-out. The helper validates and safely encodes it.
-- Mark protected pages with `export const dynamic = "force-dynamic"` because
-  they depend on per-request identity headers.
+The Cloudflare Pages version can be updated from an authenticated computer with:
 
-Dispatch owns `/signin-with-chatgpt`, `/signout-with-chatgpt`, `/callback`, the
-OAuth cookies, and identity header injection. Do not implement app routes for
-those reserved paths. Routes that do not import and call the helper remain
-anonymous-compatible.
+```bash
+npm run deploy:cloudflare
+```
 
-SIWC establishes identity only; it does not prove workspace membership. Use the
-Sites hosting platform's access policy controls for workspace-wide restrictions,
-or enforce explicit server-side membership or allowlist checks.
+## Medical disclaimer
 
-Use SIWC for account pages, user-specific dashboards, saved records, and write
-actions tied to the current ChatGPT user. Leave public content anonymous.
+This presentation is intended for general education and is not a substitute for professional medical advice, diagnosis, or treatment. Clinical decisions should follow current local guidance and consultation with an appropriately qualified healthcare professional.
 
-## Useful Commands
+## Technology
 
-- `npm run dev`: start local development
-- `npm run build`: verify the vinext build output
-- `npm test`: build the starter and verify its rendered loading skeleton
-- `npm run db:generate`: generate Drizzle migrations after schema changes
-
-## Learn More
-
-- [vinext Documentation](https://github.com/cloudflare/vinext)
-- [Drizzle D1 Guide](https://orm.drizzle.team/docs/get-started/d1-new)
+React, TypeScript, Vite, CSS, GitHub Pages, and Cloudflare Pages.
